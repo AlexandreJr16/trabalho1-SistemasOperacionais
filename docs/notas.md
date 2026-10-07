@@ -34,3 +34,17 @@
 - Pergunta provável: *"o mutex do log não esconde o problema da v3?"* Não. Ele só protege a impressão
   e os contadores; o dado compartilhado (a conta, o buffer) nunca é alterado com o log travado, e
   nenhuma thread segura o log enquanto dorme ou espera um semáforo.
+
+## Q1 v3 — sem controle de concorrência (`bin/le_v3`)
+
+- **Semáforos:** nenhum. As threads são as mesmas das v1 e v2, sem as chamadas de entrada e saída.
+- **Quem bloqueia:** ninguém. Todo mundo entra na conta na hora em que quer.
+- **A escrita é feita em etapas:** lê o saldo, dorme, grava o saldo novo, dorme, grava o
+  movimentado. A leitura também: lê o saldo, dorme, lê o movimentado.
+- **O que o log prova:**
+  - `<<< DOIS ESCRITORES`: dois escritores estão na conta ao mesmo tempo. Quando os dois leem o
+    mesmo `saldo lido`, o último a gravar apaga o movimento do outro. É a atualização perdida, e o
+    resumo mostra `SALDO ERRADO` (final ≠ inicial + o que os escritores aplicaram).
+  - `<<< LEITURA SUJA`: o leitor viu o saldo e o movimentado de momentos diferentes.
+- **Pergunta provável:** *"por que o problema só aparece com escritores?"* Leitor com leitor nunca
+  estraga nada, porque ninguém grava. Sem escritor, a conta não muda.
