@@ -37,129 +37,83 @@
 
 ## Q1 v3 — sem controle de concorrência (`bin/le_v3`)
 
-- **Semáforos:** nenhum. As threads são as mesmas das v1 e v2, sem as chamadas de entrada e saída.
-- **Quem bloqueia:** ninguém. Todo mundo entra na conta na hora em que quer.
-- **A escrita é feita em etapas:** lê o saldo, dorme, grava o saldo novo, dorme, grava o
-  movimentado. A leitura também: lê o saldo, dorme, lê o movimentado.
-- **O que o log prova:**
-  - `<<< DOIS ESCRITORES`: dois escritores estão na conta ao mesmo tempo. Quando os dois leem o
-    mesmo `saldo lido`, o último a gravar apaga o movimento do outro. É a atualização perdida, e o
-    resumo mostra `SALDO ERRADO` (final ≠ inicial + o que os escritores aplicaram).
-  - `<<< LEITURA SUJA`: o leitor viu o saldo e o movimentado de momentos diferentes.
-- **Pergunta provável:** *"por que o problema só aparece com escritores?"* Leitor com leitor nunca
-  estraga nada, porque ninguém grava. Sem escritor, a conta não muda.
+- **Semáforos:** nenhum. As threads são as das v1 e v2 sem a entrada e a saída; ninguém bloqueia.
+- **Etapas:** a escrita lê o saldo, dorme, grava o saldo, dorme e grava o movimentado. A leitura lê o
+  saldo, dorme e lê o movimentado.
+- **O log prova:** `<<< DOIS ESCRITORES` com o mesmo `saldo lido` faz o último apagar o movimento do
+  outro (`SALDO ERRADO` no resumo). `<<< LEITURA SUJA` é saldo e movimentado de momentos diferentes.
+- **Pergunta:** *"por que o problema só aparece com escritores?"* Leitor não grava; sem escritor, a
+  conta não muda.
 
 ## Q1 v1 — sem preferência de ordem de acesso (`bin/le_v1`)
 
-- **Semáforos:** `acessoEscrita` = 1. Só os escritores passam por ele.
-- **Quem bloqueia:** só o escritor, em `acessoEscrita`, quando outro escritor está na conta
-  (`BLOQUEADO: outro escritor na conta`). O leitor não tem protocolo e nunca espera.
-- **Sem preferência:** ninguém tem prioridade. Os escritores fazem fila no semáforo, e o leitor
-  entra a qualquer momento.
-- **O que o log prova:**
-  - O saldo final bate com o esperado, e "escritor com outro escritor" dá 0: os escritores se
-    excluem.
-  - "Leitor e escritor ao mesmo tempo" > 0 e `<<< LEITURA SUJA`: o leitor pegou a conta no meio de
-    uma escrita, que é exatamente o que o enunciado diz que pode ocorrer.
-  - O TSan acusa corrida só entre `consultarSaldo` e `movimentar`, nunca entre dois escritores.
-- **Pergunta provável:** *"se o leitor não espera, por que o saldo final está certo?"* A leitura suja
-  não estraga a conta, só o que o leitor vê. Quem poderia estragar são dois escritores juntos, e
-  isso o `acessoEscrita` impede.
+- **Semáforos:** `acessoEscrita` = 1, só para escritores. O leitor não tem protocolo e nunca espera.
+- **Quem bloqueia:** o escritor, quando já há outro escritor na conta. Ninguém tem prioridade.
+- **O log prova:** o saldo final bate com o esperado e "escritor com outro escritor" dá 0. "Leitor
+  com escritor" > 0 e `<<< LEITURA SUJA` são o que o enunciado permite. O TSan só acusa
+  `consultarSaldo` × `movimentar`, nunca dois escritores.
+- **Pergunta:** *"se o leitor não espera, por que o saldo está certo?"* A leitura suja estraga só o
+  que o leitor vê. Estragar a conta exige dois escritores juntos, e isso o `acessoEscrita` impede.
 
 ## Q1 v2 — escritores com preferência (`bin/le_v2`)
 
-- **Semáforos (todos começam em 1):**
-  - `mutexLeitores` protege `leitoresAtivos`; `mutexEscritores` protege `escritoresPendentes`
-    (escritores esperando ou escrevendo).
-  - `catracaLeitores`: o PRIMEIRO escritor que chega fecha, o ÚLTIMO a sair reabre.
-  - `filaLeitores`: só um leitor por vez espera na catraca.
-  - `acessoConta`: o escritor usa sozinho; os leitores ocupam como grupo (o primeiro tranca, o último
-    libera).
-- **Quem bloqueia:**
-  - O leitor fica em `catracaLeitores` ("escritor esperando ou escrevendo") ou em `filaLeitores`
-    ("outro leitor esperando na catraca").
-  - O escritor fica em `acessoConta` ("conta em uso") enquanto os leitores que já estavam dentro
-    terminam.
-- **O que o log prova:**
-  - Um escritor chega com leitores lendo e fica `BLOQUEADO: conta em uso`.
-  - O leitor que chega depois fica `BLOQUEADO: escritor esperando`, mesmo com a conta ainda ocupada
-    por leitores, e só entra depois que **todos** os escritores saem.
-  - No resumo, todos os contadores ficam em 0, e o TSan não acusa nada.
-- **Perguntas prováveis:**
-  - *"Para que serve a `filaLeitores`?"* Sem ela, vários leitores esperariam na catraca, e o
-    escritor que chega teria que disputar com todos eles. Com ela, disputa com no máximo um.
-  - *"O leitor pode passar fome?"* Pode. Se sempre houver escritor chegando, a catraca nunca abre: é
-    o preço da preferência, e o log mostra os escritores se revezando enquanto os leitores esperam.
+- **Semáforos (todos = 1):** `mutexLeitores` e `mutexEscritores` (protegem `leitoresAtivos` e
+  `escritoresPendentes`); `catracaLeitores` (o PRIMEIRO escritor fecha, o ÚLTIMO reabre);
+  `filaLeitores` (um leitor por vez na catraca); `acessoConta` (um escritor ou o grupo de leitores).
+- **Quem bloqueia:** o leitor na catraca (`escritor esperando ou escrevendo`) ou na fila; o escritor
+  em `acessoConta` (`conta em uso`) até os leitores que estão dentro saírem.
+- **O log prova:** escritor que chega DEPOIS de um leitor bloqueado entra ANTES; resumo zerado.
+- **Pergunta:** *"para que serve a `filaLeitores`?"* Com ela, o escritor que chega disputa a catraca
+  com no máximo um leitor, e não com todos.
 
 ## Q2 — o buffer (`produtores_consumidores/buffer.c`)
 
-- **Como funciona:** vetor circular com `posicaoEntrada` (onde o produtor grava) e `posicaoSaida` (de
-  onde o consumidor tira). As duas só andam para frente e voltam a 0 no fim do vetor, então a ordem
-  de saída é a mesma de entrada. A posição vazia vale 0 e aparece como `_`.
-- **Valor do item:** produtor × 100 + número do item (`203` é o 3º item do Produtor 2). Como cada
-  valor é único, o resumo consegue contar itens perdidos e duplicados.
-- **Divisão do trabalho:** os consumidores dividem o total produzido (cota). Assim toda thread sabe
-  quando parar e termina sozinha.
-- **Status no log:**
-  - `produzindo`, `vai inserir`, `inseriu ... | buffer [...]`;
-  - `vai retirar`, `retirou ... | buffer [...]`, `consumindo`;
-  - `BLOQUEADO: sem vaga, dormindo` (buffer cheio) e `BLOQUEADO: sem item, dormindo` (buffer
-    vazio), que são o "dormindo" do enunciado.
+- **Vetor circular:** o produtor grava em `posicaoEntrada` e o consumidor tira de `posicaoSaida`. As
+  duas só avançam e voltam a 0, então sai na ordem em que entrou. A posição vazia vale 0 (`_`).
+- **Item:** produtor × 100 + número (`203` é o 3º item do Produtor 2). Como é único, o resumo acha
+  perdidos e duplicados. Os consumidores dividem o total produzido, então todos sabem quando parar.
+- **Status:** `produzindo`, `inseriu ... | buffer [...]`, `retirou ...`, `consumindo`. O "dormindo" do
+  enunciado é `BLOQUEADO: sem vaga, dormindo` (buffer cheio) e `sem item, dormindo` (vazio).
 
 ## Q2 v3 — sem controle de concorrência (`bin/pc_v3`)
 
-- **Semáforos:** nenhum. As threads são as mesmas das v1 e v2, sem as chamadas de entrada e saída.
-- **Quem bloqueia:** ninguém. Ninguém dorme com o buffer cheio ou vazio, nem espera outra thread
-  sair do buffer.
-- **A inserção é feita em etapas:** lê a posição de entrada, dorme, grava o item, avança. A retirada
-  também: lê o item da posição de saída, dorme, esvazia a posição, avança.
-- **O que o log prova (onde e quando, na própria linha):**
-  - `SOBRESCREVEU`: dois produtores pegaram a mesma posição, ou o buffer estava cheio.
-  - `DUPLICADO`: dois consumidores leram o mesmo item.
-  - `posicao estava VAZIA`: o consumidor retirou com o buffer vazio.
-  - `APAGOU`: o consumidor esvaziou a posição depois que outro item já tinha sido gravado nela.
-  - O resumo conta os itens perdidos (nunca retirados) e os duplicados.
-- **Pergunta provável:** *"todo item sobrescrito se perde?"* Não. Se um consumidor já tinha lido o
-  item antes de ele ser sobrescrito, ele sai, e às vezes até duplicado. Por isso a contagem real de
-  perdidos fica no resumo, que confere item por item.
+- **Semáforos:** nenhum; ninguém dorme com o buffer cheio ou vazio. A inserção lê a posição, dorme,
+  grava e avança. A retirada lê o item, dorme, esvazia e avança.
+- **O log prova, na própria linha:** `SOBRESCREVEU` (dois produtores na mesma posição ou buffer
+  cheio), `DUPLICADO` (dois consumidores com o mesmo item), `posicao estava VAZIA` (retirou do vazio)
+  e `APAGOU` (esvaziou uma posição que já tinha item novo). O resumo conta perdidos e duplicados.
+- **Pergunta:** *"todo item sobrescrito se perde?"* Não: se um consumidor já o tinha lido, ele sai,
+  às vezes duplicado. Por isso a contagem real fica no resumo, item por item.
 
 ## Q2 v1 — vários produtores e um consumidor (`bin/pc_v1`)
 
-- **Semáforos:**
-  - `vagas` = tamanho do buffer (posições livres);
-  - `itens` = 0 (itens prontos para retirar);
-  - `mutexBuffer` = 1 (uma thread por vez no vetor e nas posições).
-- **Quem bloqueia:**
-  - O produtor em `vagas` (`sem vaga, dormindo`, buffer cheio).
-  - O consumidor em `itens` (`sem item, dormindo`, buffer vazio).
-  - Qualquer um em `mutexBuffer` (`buffer em uso`).
-  - A saída sempre acorda o outro lado: o produtor faz `V(itens)` e o consumidor faz `V(vagas)`.
-- **O que o log prova:**
-  - O consumidor dorme no início (buffer vazio) e os produtores dormem quando o buffer enche.
-  - A retirada segue a ordem de inserção.
-  - O resumo fica zerado, o buffer termina vazio e o TSan não acusa nada.
-- **Perguntas prováveis:**
-  - *"E se trocar a ordem e pegar o `mutexBuffer` antes de `vagas`?"* Deadlock: o produtor dorme
-    sem vaga segurando o mutex, e o consumidor nunca entra para abrir a vaga.
-  - *"Por que o consumidor usa mutex se é o único?"* Porque ele divide o vetor com os produtores e
-    a exibição do buffer lê todas as posições.
-  - *"Por que um produtor dormiu sem vaga com uma posição livre na tela?"* A última vaga já estava
-    reservada (`P(vagas)`) por outro produtor que ainda ia gravar.
+- **Semáforos:** `vagas` = tamanho (posições livres), `itens` = 0 (itens prontos), `mutexBuffer` = 1.
+- **Quem bloqueia:** o produtor em `vagas` (`sem vaga, dormindo`), o consumidor em `itens` (`sem item,
+  dormindo`) e qualquer um em `mutexBuffer` (`buffer em uso`). Cada saída acorda o outro lado: o
+  produtor faz `V(itens)` e o consumidor faz `V(vagas)`.
+- **O log prova:** o consumidor dorme no início, os produtores dormem com o buffer cheio e a retirada
+  segue a ordem de inserção. O resumo fica zerado, o buffer termina vazio e o TSan não acusa nada.
+- **Pergunta:** *"e se pegar o `mutexBuffer` antes de `vagas`?"* Deadlock: o produtor dorme sem vaga
+  segurando o mutex, e o consumidor nunca entra para abrir a vaga.
 
 ## Q2 v2 — vários produtores e vários consumidores (`bin/pc_v2`)
 
-- **Semáforos:** os mesmos da v1, com os mesmos valores iniciais: `vagas` = tamanho, `itens` = 0,
-  `mutexBuffer` = 1. O protocolo é idêntico.
-- **Quem bloqueia:**
-  - Como na v1, o produtor espera em `vagas` e o consumidor em `itens`.
-  - Agora também consumidor espera consumidor: dois consumidores acordam em `itens` e o segundo fica
-    `BLOQUEADO: buffer em uso` até o primeiro sair do buffer.
-- **O que o log prova:** com 3 consumidores, cada item é retirado por exatamente um deles, sem
-  duplicado nem posição vazia; o resumo fica zerado e o TSan não acusa nada.
-- **Pergunta provável:** *"então qual a diferença da v1?"* O protocolo é o mesmo porque o
-  `mutexBuffer` já exclui qualquer par de threads, inclusive dois consumidores. O que a v2 mostra é
-  que ele resolve a disputa pela `posicaoSaida`. Sem ele, dois consumidores leem a mesma posição, que
-  é o `DUPLICADO` da v3.
+- **Semáforos:** os mesmos da v1, com os mesmos valores iniciais. O protocolo é idêntico.
+- **Quem bloqueia:** como na v1, e agora consumidor também espera consumidor: dois acordam em `itens`
+  e o segundo fica `BLOQUEADO: buffer em uso` até o primeiro sair.
+- **O log prova:** com 3 consumidores, cada item é retirado por exatamente um deles. O resumo fica
+  zerado e o TSan não acusa nada.
+- **Pergunta:** *"qual a diferença da v1?"* O `mutexBuffer` já exclui qualquer par de threads,
+  inclusive dois consumidores disputando a `posicaoSaida`. Sem ele, dá o `DUPLICADO` da v3.
+
+## Perguntas extras
+
+- *Q1 v2: "o leitor pode passar fome?"* Pode. Se sempre chegar escritor, a catraca não abre; no log da
+  v2, os escritores se revezam enquanto os leitores esperam.
+- *Q2 v1: "por que o consumidor usa mutex se é o único?"* Porque ele divide o vetor com os produtores,
+  e a exibição do buffer lê todas as posições.
+- *Q2 v1: "por que um produtor dormiu sem vaga com uma posição livre na tela?"* A última vaga já estava
+  reservada (`P(vagas)`) por outro produtor que ainda ia gravar.
 
 ## Como rodar
 
