@@ -90,3 +90,17 @@
     escritor que chega teria que disputar com todos eles. Com ela, disputa com no máximo um.
   - *"O leitor pode passar fome?"* Pode. Se sempre houver escritor chegando, a catraca nunca abre: é
     o preço da preferência, e o log mostra os escritores se revezando enquanto os leitores esperam.
+
+## Q2 — o buffer (`produtores_consumidores/buffer.c`)
+
+- **Como funciona:** vetor circular com `posicaoEntrada` (onde o produtor grava) e `posicaoSaida` (de
+  onde o consumidor tira). As duas só andam para frente e voltam a 0 no fim do vetor, então a ordem
+  de saída é a mesma de entrada. A posição vazia vale 0 e aparece como `_`.
+- **Valor do item:** produtor × 100 + número do item (`203` é o 3º item do Produtor 2). Como cada
+  valor é único, o resumo consegue contar itens perdidos e duplicados.
+- **Divisão do trabalho:** os consumidores dividem o total produzido (cota). Assim toda thread sabe
+  quando parar e termina sozinha.
+- **Status no log:**
+  - `produzindo`, `vai inserir`, `inseriu ... | buffer [...]`;
+  - `vai retirar`, `retirou ... | buffer [...]`, `consumindo`;
+  - `BLOQUEADO: buffer cheio/vazio, dormindo`, que é o "dormindo" do enunciado.
