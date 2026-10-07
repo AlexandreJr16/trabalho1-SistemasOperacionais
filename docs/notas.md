@@ -103,7 +103,8 @@
 - **Status no log:**
   - `produzindo`, `vai inserir`, `inseriu ... | buffer [...]`;
   - `vai retirar`, `retirou ... | buffer [...]`, `consumindo`;
-  - `BLOQUEADO: buffer cheio/vazio, dormindo`, que é o "dormindo" do enunciado.
+  - `BLOQUEADO: sem vaga, dormindo` (buffer cheio) e `BLOQUEADO: sem item, dormindo` (buffer
+    vazio), que são o "dormindo" do enunciado.
 
 ## Q2 v3 — sem controle de concorrência (`bin/pc_v3`)
 
@@ -121,3 +122,26 @@
 - **Pergunta provável:** *"todo item sobrescrito se perde?"* Não. Se um consumidor já tinha lido o
   item antes de ele ser sobrescrito, ele sai, e às vezes até duplicado. Por isso a contagem real de
   perdidos fica no resumo, que confere item por item.
+
+## Q2 v1 — vários produtores e um consumidor (`bin/pc_v1`)
+
+- **Semáforos:**
+  - `vagas` = tamanho do buffer (posições livres);
+  - `itens` = 0 (itens prontos para retirar);
+  - `mutexBuffer` = 1 (uma thread por vez no vetor e nas posições).
+- **Quem bloqueia:**
+  - O produtor em `vagas` (`sem vaga, dormindo`, buffer cheio).
+  - O consumidor em `itens` (`sem item, dormindo`, buffer vazio).
+  - Qualquer um em `mutexBuffer` (`buffer em uso`).
+  - A saída sempre acorda o outro lado: o produtor faz `V(itens)` e o consumidor faz `V(vagas)`.
+- **O que o log prova:**
+  - O consumidor dorme no início (buffer vazio) e os produtores dormem quando o buffer enche.
+  - A retirada segue a ordem de inserção.
+  - O resumo fica zerado, o buffer termina vazio e o TSan não acusa nada.
+- **Perguntas prováveis:**
+  - *"E se trocar a ordem e pegar o `mutexBuffer` antes de `vagas`?"* Deadlock: o produtor dorme
+    sem vaga segurando o mutex, e o consumidor nunca entra para abrir a vaga.
+  - *"Por que o consumidor usa mutex se é o único?"* Porque ele divide o vetor com os produtores e
+    a exibição do buffer lê todas as posições.
+  - *"Por que um produtor dormiu sem vaga com uma posição livre na tela?"* A última vaga já estava
+    reservada (`P(vagas)`) por outro produtor que ainda ia gravar.
