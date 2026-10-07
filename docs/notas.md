@@ -48,3 +48,20 @@
   - `<<< LEITURA SUJA`: o leitor viu o saldo e o movimentado de momentos diferentes.
 - **Pergunta provável:** *"por que o problema só aparece com escritores?"* Leitor com leitor nunca
   estraga nada, porque ninguém grava. Sem escritor, a conta não muda.
+
+## Q1 v1 — sem preferência de ordem de acesso (`bin/le_v1`)
+
+- **Semáforos:** `acessoEscrita` = 1. Só os escritores passam por ele.
+- **Quem bloqueia:** só o escritor, em `acessoEscrita`, quando outro escritor está na conta
+  (`BLOQUEADO: outro escritor na conta`). O leitor não tem protocolo e nunca espera.
+- **Sem preferência:** ninguém tem prioridade. Os escritores fazem fila no semáforo, e o leitor
+  entra a qualquer momento.
+- **O que o log prova:**
+  - O saldo final bate com o esperado, e "escritor com outro escritor" dá 0: os escritores se
+    excluem.
+  - "Leitor e escritor ao mesmo tempo" > 0 e `<<< LEITURA SUJA`: o leitor pegou a conta no meio de
+    uma escrita, que é exatamente o que o enunciado diz que pode ocorrer.
+  - O TSan acusa corrida só entre `consultarSaldo` e `movimentar`, nunca entre dois escritores.
+- **Pergunta provável:** *"se o leitor não espera, por que o saldo final está certo?"* A leitura suja
+  não estraga a conta, só o que o leitor vê. Quem poderia estragar são dois escritores juntos, e
+  isso o `acessoEscrita` impede.

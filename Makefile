@@ -2,10 +2,11 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -pthread -D_POSIX_C_SOURCE=200809L -Icomum
 COMUM = comum/comum.c comum/comum.h
 CONTA = $(COMUM) leitores_escritores/conta.c leitores_escritores/conta.h
-BINARIOS = bin/le_v3
+BINARIOS = bin/le_v1 bin/le_v3
 
 all: $(BINARIOS)
 
+bin/le_v1: leitores_escritores/v1_sem_preferencia.c $(CONTA)
 bin/le_v3: leitores_escritores/v3_sem_controle.c $(CONTA)
 
 $(BINARIOS):
