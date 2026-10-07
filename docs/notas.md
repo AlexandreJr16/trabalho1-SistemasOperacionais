@@ -160,3 +160,41 @@
   `mutexBuffer` já exclui qualquer par de threads, inclusive dois consumidores. O que a v2 mostra é
   que ele resolve a disputa pela `posicaoSaida`. Sem ele, dois consumidores leem a mesma posição, que
   é o `DUPLICADO` da v3.
+
+## Como rodar
+
+```
+make            # compila os 6 programas em bin/, sem warning
+make demo       # roda cada versão com semente fixa e salva o log em docs/execucoes/
+make tsan       # recompila com ThreadSanitizer e conta os avisos de corrida de cada programa
+```
+
+- **Q1:** `bin/le_vN [-l leitores] [-e escritores] [-n operacoes] [-L atraso_leitor_ms]
+  [-E atraso_escritor_ms] [-s semente]`
+- **Q2:** `bin/pc_vN [-p produtores] [-c consumidores] [-n itens_por_produtor] [-t tamanho_buffer]
+  [-P atraso_produtor_ms] [-C atraso_consumidor_ms] [-s semente]`
+- Sem argumentos, tudo usa o valor padrão. Sem `-s`, a semente vem do relógio e aparece no cabeçalho.
+- O `make demo` usa a **mesma entrada nas três versões** de cada questão: na Q1,
+  `-l 3 -e 3 -n 4 -L 200 -E 300 -s 4`; na Q2, `-p 3 -n 4 -t 3 -P 150 -C 200 -s 5`, com 1 consumidor
+  na v1 e 3 na v2 e na v3. Com a mesma semente, os escritores sorteiam os mesmos valores, então o
+  saldo esperado é igual nas três versões (R$ 1644).
+
+## Resultado do `make demo` (o que cada log mostra)
+
+| | Q1 v1 | Q1 v2 | Q1 v3 |
+|---|---|---|---|
+| Saldo final × esperado | 1644 = 1644 | 1644 = 1644 | **1560 ≠ 1644** |
+| Escritor com outro escritor | 0 | 0 | **10** |
+| Leitor com escritor | **14** (permitido) | 0 | **18** |
+| Leituras sujas | **6** (permitido) | 0 | **9** |
+| TSan | só leitor×escritor | 0 avisos | corridas |
+
+| | Q2 v1 (1 consumidor) | Q2 v2 (3 consumidores) | Q2 v3 (3 consumidores) |
+|---|---|---|---|
+| Retirados uma vez só / produzidos | 12 / 12 | 12 / 12 | **1 / 12** |
+| Perdidos / duplicados / vazias | 0 / 0 / 0 | 0 / 0 / 0 | **10 / 1 / 8** |
+| Buffer no fim | vazio | vazio | sobrou item |
+| TSan | 0 avisos | 0 avisos | corridas |
+
+Os tempos dos logs podem variar alguns milissegundos entre execuções, porque o escalonador não é
+determinístico. Os logs de `docs/execucoes/` são os que estão no relatório; não editar.

@@ -1,0 +1,95 @@
+=== Produtores x Consumidores, versao 3: sem controle de concorrencia ===
+Configuracao: 3 produtor(es) com 4 item(ns) cada, 3 consumidor(es), buffer de 3 posicoes
+Atrasos: produtor ~150 ms, consumidor ~200 ms | Semente: 5
+
+[     0 ms] Produtor 1 criado
+[     0 ms] Produtor 2 criado
+[     0 ms] Produtor 1 produzindo o item 101
+[     0 ms] Produtor 3 criado
+[     0 ms] Produtor 2 produzindo o item 201
+[     0 ms] Consumidor 1 criado
+[     0 ms] Produtor 3 produzindo o item 301
+[     0 ms] Consumidor 1 vai retirar da posicao 0
+[     0 ms] Consumidor 2 criado
+[     0 ms] Consumidor 3 criado
+[     0 ms] Consumidor 2 vai retirar da posicao 0
+[     0 ms] Consumidor 3 vai retirar da posicao 0
+[    92 ms] Produtor 2 vai inserir 201 na posicao 0
+[   130 ms] Consumidor 1 retirou da posicao 0 | buffer [ _ _ _ ]  <<< a posicao estava VAZIA
+[   130 ms] Consumidor 1 consumindo nada: a posicao estava vazia
+[   136 ms] Consumidor 2 retirou da posicao 0 | buffer [ _ _ _ ]  <<< a posicao estava VAZIA
+[   136 ms] Consumidor 2 consumindo nada: a posicao estava vazia
+[   142 ms] Consumidor 3 retirou da posicao 0 | buffer [ _ _ _ ]  <<< a posicao estava VAZIA
+[   142 ms] Consumidor 3 consumindo nada: a posicao estava vazia
+[   173 ms] Produtor 3 vai inserir 301 na posicao 0
+[   195 ms] Produtor 1 vai inserir 101 na posicao 0
+[   277 ms] Consumidor 3 vai retirar da posicao 1
+[   301 ms] Produtor 2 inseriu 201 na posicao 0 | buffer [ 201 _ _ ]
+[   301 ms] Produtor 2 produzindo o item 202
+[   309 ms] Produtor 3 inseriu 301 na posicao 0 | buffer [ 301 _ _ ]  <<< SOBRESCREVEU o item 201
+[   310 ms] Produtor 3 produzindo o item 302
+[   360 ms] Produtor 1 inseriu 101 na posicao 0 | buffer [ 101 _ _ ]  <<< SOBRESCREVEU o item 301
+[   360 ms] Produtor 1 produzindo o item 102
+[   413 ms] Produtor 3 vai inserir 302 na posicao 1
+[   414 ms] Consumidor 1 vai retirar da posicao 1
+[   432 ms] Consumidor 2 vai retirar da posicao 1
+[   470 ms] Produtor 1 vai inserir 102 na posicao 1
+[   501 ms] Produtor 2 vai inserir 202 na posicao 1
+[   529 ms] Consumidor 3 retirou da posicao 1 | buffer [ 101 _ _ ]  <<< a posicao estava VAZIA
+[   529 ms] Consumidor 3 consumindo nada: a posicao estava vazia
+[   553 ms] Produtor 1 inseriu 102 na posicao 1 | buffer [ 101 102 _ ]
+[   553 ms] Produtor 1 produzindo o item 103
+[   605 ms] Produtor 2 inseriu 202 na posicao 1 | buffer [ 101 202 _ ]  <<< SOBRESCREVEU o item 102
+[   605 ms] Produtor 2 produzindo o item 203
+[   622 ms] Consumidor 1 retirou da posicao 1 | buffer [ 101 _ _ ]  <<< a posicao estava VAZIA  <<< APAGOU o item 202
+[   622 ms] Consumidor 1 consumindo nada: a posicao estava vazia
+[   624 ms] Produtor 3 inseriu 302 na posicao 1 | buffer [ 101 302 _ ]
+[   624 ms] Produtor 3 produzindo o item 303
+[   695 ms] Produtor 2 vai inserir 203 na posicao 2
+[   715 ms] Consumidor 3 vai retirar da posicao 2
+[   717 ms] Consumidor 2 retirou da posicao 1 | buffer [ 101 _ _ ]  <<< a posicao estava VAZIA  <<< APAGOU o item 302
+[   717 ms] Consumidor 2 consumindo nada: a posicao estava vazia
+[   757 ms] Produtor 1 vai inserir 103 na posicao 2
+[   777 ms] Consumidor 1 vai retirar da posicao 2
+[   783 ms] Produtor 3 vai inserir 303 na posicao 2
+[   789 ms] Produtor 2 inseriu 203 na posicao 2 | buffer [ 101 _ 203 ]
+[   789 ms] Produtor 2 produzindo o item 204
+[   843 ms] Produtor 1 inseriu 103 na posicao 2 | buffer [ 101 _ 103 ]  <<< SOBRESCREVEU o item 203
+[   843 ms] Produtor 1 produzindo o item 104
+[   866 ms] Produtor 2 vai inserir 204 na posicao 0
+[   918 ms] Produtor 3 inseriu 303 na posicao 2 | buffer [ 101 _ 303 ]  <<< SOBRESCREVEU o item 103
+[   918 ms] Produtor 3 produzindo o item 304
+[   947 ms] Consumidor 2 vai retirar da posicao 2
+[   960 ms] Produtor 2 inseriu 204 na posicao 0 | buffer [ 204 _ 303 ]  <<< SOBRESCREVEU o item 101
+[   960 ms] Produtor 2 terminou
+[   987 ms] Consumidor 3 retirou da posicao 2 | buffer [ 204 _ _ ]  <<< a posicao estava VAZIA  <<< APAGOU o item 303
+[   987 ms] Consumidor 3 consumindo nada: a posicao estava vazia
+[  1014 ms] Produtor 3 vai inserir 304 na posicao 1
+[  1019 ms] Produtor 1 vai inserir 104 na posicao 1
+[  1048 ms] Consumidor 1 retirou da posicao 2 | buffer [ 204 _ _ ]  <<< a posicao estava VAZIA
+[  1048 ms] Consumidor 1 consumindo nada: a posicao estava vazia
+[  1109 ms] Consumidor 2 retirou 303 da posicao 2 | buffer [ 204 _ _ ]
+[  1109 ms] Consumidor 2 consumindo o item 303
+[  1141 ms] Produtor 3 inseriu 304 na posicao 1 | buffer [ 204 304 _ ]
+[  1141 ms] Produtor 3 terminou
+[  1163 ms] Consumidor 1 vai retirar da posicao 0
+[  1234 ms] Produtor 1 inseriu 104 na posicao 1 | buffer [ 204 104 _ ]  <<< SOBRESCREVEU o item 304
+[  1234 ms] Produtor 1 terminou
+[  1279 ms] Consumidor 3 vai retirar da posicao 0
+[  1307 ms] Consumidor 2 vai retirar da posicao 0
+[  1442 ms] Consumidor 1 retirou 204 da posicao 0 | buffer [ _ 104 _ ]
+[  1442 ms] Consumidor 1 consumindo o item 204
+[  1475 ms] Consumidor 2 retirou 204 da posicao 0 | buffer [ _ 104 _ ]  <<< DUPLICADO: o item ja tinha sido retirado
+[  1475 ms] Consumidor 2 consumindo o item 204
+[  1555 ms] Consumidor 1 terminou
+[  1575 ms] Consumidor 2 terminou
+[  1579 ms] Consumidor 3 retirou 204 da posicao 0 | buffer [ _ 104 _ ]  <<< DUPLICADO: o item ja tinha sido retirado
+[  1579 ms] Consumidor 3 consumindo o item 204
+[  1759 ms] Consumidor 3 terminou
+
+=== Resumo ===
+Itens produzidos: 12 | retirados uma vez so: 1 (esperado: todos)
+Itens perdidos (nunca retirados): 10
+Itens duplicados (retirados mais de uma vez): 1
+Retiradas de posicao vazia: 8
+Buffer no fim: [ _ 104 _ ]

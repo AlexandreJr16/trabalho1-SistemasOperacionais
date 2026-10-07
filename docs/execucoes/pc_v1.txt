@@ -1,0 +1,121 @@
+=== Produtores x Consumidores, versao 1: varios produtores e um consumidor ===
+Configuracao: 3 produtor(es) com 4 item(ns) cada, 1 consumidor(es), buffer de 3 posicoes
+Atrasos: produtor ~150 ms, consumidor ~200 ms | Semente: 5
+
+[     0 ms] Produtor 1 criado
+[     0 ms] Produtor 2 criado
+[     0 ms] Produtor 1 produzindo o item 101
+[     0 ms] Produtor 3 criado
+[     0 ms] Produtor 2 produzindo o item 201
+[     0 ms] Consumidor 1 criado
+[     0 ms] Produtor 3 produzindo o item 301
+[     0 ms] Consumidor 1 BLOQUEADO: sem item, dormindo
+[    92 ms] Produtor 2 vai inserir 201 na posicao 0
+[   173 ms] Produtor 3 BLOQUEADO: buffer em uso
+[   195 ms] Produtor 1 BLOQUEADO: buffer em uso
+[   301 ms] Produtor 2 inseriu 201 na posicao 0 | buffer [ 201 _ _ ]
+[   301 ms] Produtor 2 produzindo o item 202
+[   301 ms] Consumidor 1 DESBLOQUEADO
+[   301 ms] Consumidor 1 BLOQUEADO: buffer em uso
+[   301 ms] Produtor 3 DESBLOQUEADO
+[   301 ms] Produtor 3 vai inserir 301 na posicao 1
+[   437 ms] Produtor 3 inseriu 301 na posicao 1 | buffer [ 201 301 _ ]
+[   437 ms] Produtor 3 produzindo o item 302
+[   437 ms] Produtor 1 DESBLOQUEADO
+[   437 ms] Produtor 1 vai inserir 101 na posicao 2
+[   500 ms] Produtor 2 BLOQUEADO: sem vaga, dormindo
+[   541 ms] Produtor 3 BLOQUEADO: sem vaga, dormindo
+[   602 ms] Produtor 1 inseriu 101 na posicao 2 | buffer [ 201 301 101 ]
+[   602 ms] Produtor 1 produzindo o item 102
+[   603 ms] Consumidor 1 DESBLOQUEADO
+[   603 ms] Consumidor 1 vai retirar da posicao 0
+[   712 ms] Produtor 1 BLOQUEADO: sem vaga, dormindo
+[   733 ms] Consumidor 1 retirou 201 da posicao 0 | buffer [ _ 301 101 ]
+[   733 ms] Consumidor 1 consumindo o item 201
+[   733 ms] Produtor 2 DESBLOQUEADO
+[   733 ms] Produtor 2 vai inserir 202 na posicao 0
+[   837 ms] Produtor 2 inseriu 202 na posicao 0 | buffer [ 202 301 101 ]
+[   837 ms] Produtor 2 produzindo o item 203
+[   927 ms] Produtor 2 BLOQUEADO: sem vaga, dormindo
+[  1017 ms] Consumidor 1 vai retirar da posicao 1
+[  1226 ms] Consumidor 1 retirou 301 da posicao 1 | buffer [ 202 _ 101 ]
+[  1226 ms] Consumidor 1 consumindo o item 301
+[  1226 ms] Produtor 3 DESBLOQUEADO
+[  1226 ms] Produtor 3 vai inserir 302 na posicao 1
+[  1381 ms] Consumidor 1 BLOQUEADO: buffer em uso
+[  1437 ms] Produtor 3 inseriu 302 na posicao 1 | buffer [ 202 302 101 ]
+[  1437 ms] Produtor 3 produzindo o item 303
+[  1437 ms] Consumidor 1 DESBLOQUEADO
+[  1437 ms] Consumidor 1 vai retirar da posicao 2
+[  1596 ms] Produtor 3 BLOQUEADO: sem vaga, dormindo
+[  1707 ms] Consumidor 1 retirou 101 da posicao 2 | buffer [ 202 302 _ ]
+[  1707 ms] Consumidor 1 consumindo o item 101
+[  1707 ms] Produtor 1 DESBLOQUEADO
+[  1707 ms] Produtor 1 vai inserir 102 na posicao 2
+[  1790 ms] Produtor 1 inseriu 102 na posicao 2 | buffer [ 202 302 102 ]
+[  1790 ms] Produtor 1 produzindo o item 103
+[  1822 ms] Consumidor 1 vai retirar da posicao 0
+[  1995 ms] Produtor 1 BLOQUEADO: sem vaga, dormindo
+[  2101 ms] Consumidor 1 retirou 202 da posicao 0 | buffer [ _ 302 102 ]
+[  2101 ms] Consumidor 1 consumindo o item 202
+[  2102 ms] Produtor 2 DESBLOQUEADO
+[  2102 ms] Produtor 2 vai inserir 203 na posicao 0
+[  2196 ms] Produtor 2 inseriu 203 na posicao 0 | buffer [ 203 302 102 ]
+[  2196 ms] Produtor 2 produzindo o item 204
+[  2214 ms] Consumidor 1 vai retirar da posicao 1
+[  2273 ms] Produtor 2 BLOQUEADO: sem vaga, dormindo
+[  2443 ms] Consumidor 1 retirou 302 da posicao 1 | buffer [ 203 _ 102 ]
+[  2443 ms] Consumidor 1 consumindo o item 302
+[  2443 ms] Produtor 3 DESBLOQUEADO
+[  2443 ms] Produtor 3 vai inserir 303 na posicao 1
+[  2578 ms] Produtor 3 inseriu 303 na posicao 1 | buffer [ 203 303 102 ]
+[  2578 ms] Produtor 3 produzindo o item 304
+[  2664 ms] Consumidor 1 vai retirar da posicao 2
+[  2674 ms] Produtor 3 BLOQUEADO: sem vaga, dormindo
+[  2835 ms] Consumidor 1 retirou 102 da posicao 2 | buffer [ 203 303 _ ]
+[  2835 ms] Consumidor 1 consumindo o item 102
+[  2835 ms] Produtor 1 DESBLOQUEADO
+[  2835 ms] Produtor 1 vai inserir 103 na posicao 2
+[  2922 ms] Produtor 1 inseriu 103 na posicao 2 | buffer [ 203 303 103 ]
+[  2922 ms] Produtor 1 produzindo o item 104
+[  2937 ms] Consumidor 1 vai retirar da posicao 0
+[  3071 ms] Consumidor 1 retirou 203 da posicao 0 | buffer [ _ 303 103 ]
+[  3071 ms] Consumidor 1 consumindo o item 203
+[  3071 ms] Produtor 2 DESBLOQUEADO
+[  3071 ms] Produtor 2 vai inserir 204 na posicao 0
+[  3098 ms] Produtor 1 BLOQUEADO: sem vaga, dormindo
+[  3164 ms] Produtor 2 inseriu 204 na posicao 0 | buffer [ 204 303 103 ]
+[  3164 ms] Produtor 2 terminou
+[  3256 ms] Consumidor 1 vai retirar da posicao 1
+[  3518 ms] Consumidor 1 retirou 303 da posicao 1 | buffer [ 204 _ 103 ]
+[  3518 ms] Consumidor 1 consumindo o item 303
+[  3518 ms] Produtor 3 DESBLOQUEADO
+[  3518 ms] Produtor 3 vai inserir 304 na posicao 1
+[  3644 ms] Produtor 3 inseriu 304 na posicao 1 | buffer [ 204 304 103 ]
+[  3644 ms] Produtor 3 terminou
+[  3769 ms] Consumidor 1 vai retirar da posicao 2
+[  4061 ms] Consumidor 1 retirou 103 da posicao 2 | buffer [ 204 304 _ ]
+[  4061 ms] Consumidor 1 consumindo o item 103
+[  4061 ms] Produtor 1 DESBLOQUEADO
+[  4061 ms] Produtor 1 vai inserir 104 na posicao 2
+[  4212 ms] Consumidor 1 BLOQUEADO: buffer em uso
+[  4275 ms] Produtor 1 inseriu 104 na posicao 2 | buffer [ 204 304 104 ]
+[  4275 ms] Produtor 1 terminou
+[  4275 ms] Consumidor 1 DESBLOQUEADO
+[  4275 ms] Consumidor 1 vai retirar da posicao 0
+[  4415 ms] Consumidor 1 retirou 204 da posicao 0 | buffer [ _ 304 104 ]
+[  4415 ms] Consumidor 1 consumindo o item 204
+[  4605 ms] Consumidor 1 vai retirar da posicao 1
+[  4826 ms] Consumidor 1 retirou 304 da posicao 1 | buffer [ _ _ 104 ]
+[  4826 ms] Consumidor 1 consumindo o item 304
+[  4947 ms] Consumidor 1 vai retirar da posicao 2
+[  5222 ms] Consumidor 1 retirou 104 da posicao 2 | buffer [ _ _ _ ]
+[  5222 ms] Consumidor 1 consumindo o item 104
+[  5364 ms] Consumidor 1 terminou
+
+=== Resumo ===
+Itens produzidos: 12 | retirados uma vez so: 12 (esperado: todos)
+Itens perdidos (nunca retirados): 0
+Itens duplicados (retirados mais de uma vez): 0
+Retiradas de posicao vazia: 0
+Buffer no fim: [ _ _ _ ]

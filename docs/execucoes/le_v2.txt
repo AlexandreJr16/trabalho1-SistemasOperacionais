@@ -1,0 +1,147 @@
+=== Leitores x Escritores, versao 2: escritores com preferencia ===
+Configuracao: 3 leitor(es), 3 escritor(es), 4 operacao(oes) cada
+Atrasos: leitor ~200 ms, escritor ~300 ms | Semente: 4
+Saldo inicial: R$ 1000
+
+[     0 ms] Leitor 1 criado
+[     0 ms] Leitor 2 criado
+[     0 ms] Leitor 3 criado
+[     0 ms] Escritor 1 criado
+[     0 ms] Escritor 2 criado
+[     0 ms] Escritor 3 criado
+[   184 ms] Escritor 2 quer depositar R$ 101
+[   184 ms] Escritor 2 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[   187 ms] Leitor 1 quer consultar o saldo
+[   187 ms] Leitor 1 BLOQUEADO: escritor esperando ou escrevendo
+[   252 ms] Escritor 3 quer depositar R$ 22
+[   252 ms] Escritor 3 BLOQUEADO: conta em uso
+[   293 ms] Leitor 2 quer consultar o saldo
+[   293 ms] Leitor 2 BLOQUEADO: outro leitor esperando na catraca
+[   299 ms] Leitor 3 quer consultar o saldo
+[   299 ms] Leitor 3 BLOQUEADO: outro leitor esperando na catraca
+[   396 ms] Escritor 1 quer depositar R$ 195
+[   396 ms] Escritor 1 BLOQUEADO: conta em uso
+[   665 ms] Escritor 2 DEPOSITOU R$ 101: saldo lido R$ 1000, gravado R$ 1101
+[   665 ms] Escritor 2 SAIU da conta
+[   665 ms] Escritor 3 DESBLOQUEADO
+[   665 ms] Escritor 3 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[   945 ms] Escritor 2 quer depositar R$ 164
+[   945 ms] Escritor 2 BLOQUEADO: conta em uso
+[  1168 ms] Escritor 3 DEPOSITOU R$ 22: saldo lido R$ 1101, gravado R$ 1123
+[  1168 ms] Escritor 3 SAIU da conta
+[  1168 ms] Escritor 1 DESBLOQUEADO
+[  1168 ms] Escritor 1 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  1401 ms] Escritor 3 quer depositar R$ 103
+[  1401 ms] Escritor 3 BLOQUEADO: conta em uso
+[  1769 ms] Escritor 1 DEPOSITOU R$ 195: saldo lido R$ 1123, gravado R$ 1318
+[  1769 ms] Escritor 1 SAIU da conta
+[  1769 ms] Escritor 2 DESBLOQUEADO
+[  1769 ms] Escritor 2 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  2203 ms] Escritor 1 quer sacar R$ 142
+[  2203 ms] Escritor 1 BLOQUEADO: conta em uso
+[  2211 ms] Escritor 2 DEPOSITOU R$ 164: saldo lido R$ 1318, gravado R$ 1482
+[  2211 ms] Escritor 2 SAIU da conta
+[  2211 ms] Escritor 3 DESBLOQUEADO
+[  2211 ms] Escritor 3 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  2484 ms] Escritor 2 quer sacar R$ 91
+[  2484 ms] Escritor 2 BLOQUEADO: conta em uso
+[  2833 ms] Escritor 3 DEPOSITOU R$ 103: saldo lido R$ 1482, gravado R$ 1585
+[  2833 ms] Escritor 3 SAIU da conta
+[  2834 ms] Escritor 1 DESBLOQUEADO
+[  2834 ms] Escritor 1 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  3063 ms] Escritor 3 quer depositar R$ 153
+[  3063 ms] Escritor 3 BLOQUEADO: conta em uso
+[  3664 ms] Escritor 1 SACOU R$ 142: saldo lido R$ 1585, gravado R$ 1443
+[  3664 ms] Escritor 1 SAIU da conta
+[  3664 ms] Escritor 2 DESBLOQUEADO
+[  3664 ms] Escritor 2 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  4006 ms] Escritor 1 quer sacar R$ 44
+[  4006 ms] Escritor 1 BLOQUEADO: conta em uso
+[  4170 ms] Escritor 2 SACOU R$ 91: saldo lido R$ 1443, gravado R$ 1352
+[  4170 ms] Escritor 2 SAIU da conta
+[  4170 ms] Escritor 3 DESBLOQUEADO
+[  4170 ms] Escritor 3 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  4415 ms] Escritor 2 quer sacar R$ 20
+[  4415 ms] Escritor 2 BLOQUEADO: conta em uso
+[  4764 ms] Escritor 3 DEPOSITOU R$ 153: saldo lido R$ 1352, gravado R$ 1505
+[  4764 ms] Escritor 3 SAIU da conta
+[  4764 ms] Escritor 1 DESBLOQUEADO
+[  4764 ms] Escritor 1 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  4933 ms] Escritor 3 quer depositar R$ 151
+[  4933 ms] Escritor 3 BLOQUEADO: conta em uso
+[  5456 ms] Escritor 1 SACOU R$ 44: saldo lido R$ 1505, gravado R$ 1461
+[  5456 ms] Escritor 1 SAIU da conta
+[  5456 ms] Escritor 2 DESBLOQUEADO
+[  5456 ms] Escritor 2 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  5885 ms] Escritor 1 quer depositar R$ 52
+[  5885 ms] Escritor 1 BLOQUEADO: conta em uso
+[  5947 ms] Escritor 2 SACOU R$ 20: saldo lido R$ 1461, gravado R$ 1441
+[  5947 ms] Escritor 2 SAIU da conta
+[  5947 ms] Escritor 2 terminou
+[  5947 ms] Escritor 3 DESBLOQUEADO
+[  5947 ms] Escritor 3 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  6517 ms] Escritor 3 DEPOSITOU R$ 151: saldo lido R$ 1441, gravado R$ 1592
+[  6517 ms] Escritor 3 SAIU da conta
+[  6517 ms] Escritor 3 terminou
+[  6517 ms] Escritor 1 DESBLOQUEADO
+[  6517 ms] Escritor 1 ENTROU na conta (dentro: 0 leitor(es), 1 escritor(es))
+[  7117 ms] Escritor 1 DEPOSITOU R$ 52: saldo lido R$ 1592, gravado R$ 1644
+[  7117 ms] Escritor 1 SAIU da conta
+[  7117 ms] Escritor 1 terminou
+[  7117 ms] Leitor 1 DESBLOQUEADO
+[  7117 ms] Leitor 1 ENTROU na conta (dentro: 1 leitor(es), 0 escritor(es))
+[  7117 ms] Leitor 2 DESBLOQUEADO
+[  7117 ms] Leitor 2 ENTROU na conta (dentro: 2 leitor(es), 0 escritor(es))
+[  7117 ms] Leitor 3 DESBLOQUEADO
+[  7117 ms] Leitor 3 ENTROU na conta (dentro: 3 leitor(es), 0 escritor(es))
+[  7220 ms] Leitor 2 LEU saldo R$ 1644, movimentado R$ +644
+[  7220 ms] Leitor 2 SAIU da conta
+[  7231 ms] Leitor 3 LEU saldo R$ 1644, movimentado R$ +644
+[  7231 ms] Leitor 3 SAIU da conta
+[  7249 ms] Leitor 1 LEU saldo R$ 1644, movimentado R$ +644
+[  7249 ms] Leitor 1 SAIU da conta
+[  7358 ms] Leitor 2 quer consultar o saldo
+[  7358 ms] Leitor 2 ENTROU na conta (dentro: 1 leitor(es), 0 escritor(es))
+[  7378 ms] Leitor 1 quer consultar o saldo
+[  7378 ms] Leitor 1 ENTROU na conta (dentro: 2 leitor(es), 0 escritor(es))
+[  7408 ms] Leitor 3 quer consultar o saldo
+[  7408 ms] Leitor 3 ENTROU na conta (dentro: 3 leitor(es), 0 escritor(es))
+[  7505 ms] Leitor 2 LEU saldo R$ 1644, movimentado R$ +644
+[  7505 ms] Leitor 2 SAIU da conta
+[  7570 ms] Leitor 1 LEU saldo R$ 1644, movimentado R$ +644
+[  7570 ms] Leitor 1 SAIU da conta
+[  7632 ms] Leitor 3 LEU saldo R$ 1644, movimentado R$ +644
+[  7632 ms] Leitor 3 SAIU da conta
+[  7757 ms] Leitor 2 quer consultar o saldo
+[  7758 ms] Leitor 2 ENTROU na conta (dentro: 1 leitor(es), 0 escritor(es))
+[  7775 ms] Leitor 3 quer consultar o saldo
+[  7775 ms] Leitor 3 ENTROU na conta (dentro: 2 leitor(es), 0 escritor(es))
+[  7862 ms] Leitor 1 quer consultar o saldo
+[  7862 ms] Leitor 1 ENTROU na conta (dentro: 3 leitor(es), 0 escritor(es))
+[  7945 ms] Leitor 3 LEU saldo R$ 1644, movimentado R$ +644
+[  7945 ms] Leitor 3 SAIU da conta
+[  8046 ms] Leitor 2 LEU saldo R$ 1644, movimentado R$ +644
+[  8046 ms] Leitor 2 SAIU da conta
+[  8125 ms] Leitor 3 quer consultar o saldo
+[  8125 ms] Leitor 3 ENTROU na conta (dentro: 2 leitor(es), 0 escritor(es))
+[  8148 ms] Leitor 1 LEU saldo R$ 1644, movimentado R$ +644
+[  8148 ms] Leitor 1 SAIU da conta
+[  8296 ms] Leitor 2 quer consultar o saldo
+[  8296 ms] Leitor 2 ENTROU na conta (dentro: 2 leitor(es), 0 escritor(es))
+[  8364 ms] Leitor 3 LEU saldo R$ 1644, movimentado R$ +644
+[  8364 ms] Leitor 3 SAIU da conta
+[  8364 ms] Leitor 3 terminou
+[  8449 ms] Leitor 1 quer consultar o saldo
+[  8449 ms] Leitor 1 ENTROU na conta (dentro: 2 leitor(es), 0 escritor(es))
+[  8546 ms] Leitor 2 LEU saldo R$ 1644, movimentado R$ +644
+[  8546 ms] Leitor 2 SAIU da conta
+[  8546 ms] Leitor 2 terminou
+[  8638 ms] Leitor 1 LEU saldo R$ 1644, movimentado R$ +644
+[  8638 ms] Leitor 1 SAIU da conta
+[  8638 ms] Leitor 1 terminou
+
+=== Resumo ===
+Saldo final: R$ 1644 | esperado: R$ 1644 (inicial + o que os escritores aplicaram)
+Escritor entrou com outro escritor na conta: 0 vez(es)
+Leitor e escritor na conta ao mesmo tempo: 0 vez(es)
+Leituras sujas: 0
