@@ -104,3 +104,20 @@
   - `produzindo`, `vai inserir`, `inseriu ... | buffer [...]`;
   - `vai retirar`, `retirou ... | buffer [...]`, `consumindo`;
   - `BLOQUEADO: buffer cheio/vazio, dormindo`, que é o "dormindo" do enunciado.
+
+## Q2 v3 — sem controle de concorrência (`bin/pc_v3`)
+
+- **Semáforos:** nenhum. As threads são as mesmas das v1 e v2, sem as chamadas de entrada e saída.
+- **Quem bloqueia:** ninguém. Ninguém dorme com o buffer cheio ou vazio, nem espera outra thread
+  sair do buffer.
+- **A inserção é feita em etapas:** lê a posição de entrada, dorme, grava o item, avança. A retirada
+  também: lê o item da posição de saída, dorme, esvazia a posição, avança.
+- **O que o log prova (onde e quando, na própria linha):**
+  - `SOBRESCREVEU`: dois produtores pegaram a mesma posição, ou o buffer estava cheio.
+  - `DUPLICADO`: dois consumidores leram o mesmo item.
+  - `posicao estava VAZIA`: o consumidor retirou com o buffer vazio.
+  - `APAGOU`: o consumidor esvaziou a posição depois que outro item já tinha sido gravado nela.
+  - O resumo conta os itens perdidos (nunca retirados) e os duplicados.
+- **Pergunta provável:** *"todo item sobrescrito se perde?"* Não. Se um consumidor já tinha lido o
+  item antes de ele ser sobrescrito, ele sai, e às vezes até duplicado. Por isso a contagem real de
+  perdidos fica no resumo, que confere item por item.

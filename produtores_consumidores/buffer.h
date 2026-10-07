@@ -34,7 +34,7 @@ int lerConfig(int argc, char **argv);
 - Funcoes:
     produzir: anuncia e gasta o tempo de producao; o valor do item e produtor x 100 + item
     inserir: poe o item na posicao de entrada em etapas (le a posicao, dorme, grava, avanca)
-    retirar: tira o item da posicao de saida em etapas (le a posicao, dorme, pega, avanca)
+    retirar: tira o item da posicao de saida em etapas (le o item, dorme, esvazia, avanca)
     consumir: anuncia e gasta o tempo de consumo
     cotaConsumidor: quantos itens o consumidor retira, para o total bater com o produzido
     executar: imprime a configuracao, cria as threads, espera todas e imprime o resumo

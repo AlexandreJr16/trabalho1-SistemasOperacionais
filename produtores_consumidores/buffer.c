@@ -102,33 +102,44 @@ void inserir(Thread *thread, int valor) {
     registrar("%s inseriu %d na posicao %d | buffer %s", thread->nome, valor, posicao, texto);
     return;
   }
-  registrar("%s inseriu %d na posicao %d | buffer %s  <<< SOBRESCREVEU o item %d, que se perdeu",
+  registrar("%s inseriu %d na posicao %d | buffer %s  <<< SOBRESCREVEU o item %d",
             thread->nome, valor, posicao, texto, anterior);
+}
+
+// apagado e o que estava na posicao na hora de esvaziar. Se nao e o item retirado, outro item
+// foi gravado ali durante a retirada e saiu do buffer sem passar pelo consumidor.
+static void registrarRetirada(Thread *thread, int valor, int posicao, int apagado) {
+  char texto[100];
+  descreverBuffer(texto);
+  char alertaApagou[40] = "";
+  if (apagado != valor && apagado != VAZIO)
+    snprintf(alertaApagou, sizeof(alertaApagou), "  <<< APAGOU o item %d", apagado);
+
+  travarLog();
+  if (valor == VAZIO) {
+    retiradasVazias++;
+    registrar("%s retirou da posicao %d | buffer %s  <<< a posicao estava VAZIA%s", thread->nome,
+              posicao, texto, alertaApagou);
+  } else {
+    vezesRetirado[valor]++;
+    registrar("%s retirou %d da posicao %d | buffer %s%s%s", thread->nome, valor, posicao, texto,
+              vezesRetirado[valor] > 1 ? "  <<< DUPLICADO: o item ja tinha sido retirado" : "",
+              alertaApagou);
+  }
+  destravarLog();
 }
 
 // Sem controle, dois consumidores leem a mesma posicao e o item sai DUPLICADO; com o buffer
 // vazio, o consumidor pega uma posicao VAZIA.
 int retirar(Thread *thread) {
   int posicao = buffer.posicaoSaida;
+  int valor = buffer.vetor[posicao];
   registrar("%s vai retirar da posicao %d", thread->nome, posicao);
   dormirMs(atrasoAleatorio(thread, config.atrasoConsumidor));
-  int valor = buffer.vetor[posicao];
+  int apagado = buffer.vetor[posicao];
   buffer.vetor[posicao] = VAZIO;
   buffer.posicaoSaida = (posicao + 1) % config.tamanho;
-
-  char texto[100];
-  descreverBuffer(texto);
-  travarLog();
-  if (valor == VAZIO) {
-    retiradasVazias++;
-    registrar("%s retirou da posicao %d | buffer %s  <<< a posicao estava VAZIA", thread->nome,
-              posicao, texto);
-  } else {
-    vezesRetirado[valor]++;
-    registrar("%s retirou %d da posicao %d | buffer %s%s", thread->nome, valor, posicao, texto,
-              vezesRetirado[valor] > 1 ? "  <<< DUPLICADO: o item ja tinha sido retirado" : "");
-  }
-  destravarLog();
+  registrarRetirada(thread, valor, posicao, apagado);
   return valor;
 }
 
