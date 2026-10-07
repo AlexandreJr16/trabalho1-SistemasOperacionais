@@ -65,3 +65,28 @@
 - **Pergunta provável:** *"se o leitor não espera, por que o saldo final está certo?"* A leitura suja
   não estraga a conta, só o que o leitor vê. Quem poderia estragar são dois escritores juntos, e
   isso o `acessoEscrita` impede.
+
+## Q1 v2 — escritores com preferência (`bin/le_v2`)
+
+- **Semáforos (todos começam em 1):**
+  - `mutexLeitores` protege `leitoresAtivos`; `mutexEscritores` protege `escritoresPendentes`
+    (escritores esperando ou escrevendo).
+  - `catracaLeitores`: o PRIMEIRO escritor que chega fecha, o ÚLTIMO a sair reabre.
+  - `filaLeitores`: só um leitor por vez espera na catraca.
+  - `acessoConta`: o escritor usa sozinho; os leitores ocupam como grupo (o primeiro tranca, o último
+    libera).
+- **Quem bloqueia:**
+  - O leitor fica em `catracaLeitores` ("escritor esperando ou escrevendo") ou em `filaLeitores`
+    ("outro leitor esperando na catraca").
+  - O escritor fica em `acessoConta` ("conta em uso") enquanto os leitores que já estavam dentro
+    terminam.
+- **O que o log prova:**
+  - Um escritor chega com leitores lendo e fica `BLOQUEADO: conta em uso`.
+  - O leitor que chega depois fica `BLOQUEADO: escritor esperando`, mesmo com a conta ainda ocupada
+    por leitores, e só entra depois que **todos** os escritores saem.
+  - No resumo, todos os contadores ficam em 0, e o TSan não acusa nada.
+- **Perguntas prováveis:**
+  - *"Para que serve a `filaLeitores`?"* Sem ela, vários leitores esperariam na catraca, e o
+    escritor que chega teria que disputar com todos eles. Com ela, disputa com no máximo um.
+  - *"O leitor pode passar fome?"* Pode. Se sempre houver escritor chegando, a catraca nunca abre: é
+    o preço da preferência, e o log mostra os escritores se revezando enquanto os leitores esperam.
