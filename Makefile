@@ -1,19 +1,9 @@
-CC      = gcc
-CFLAGS  = -Wall -Wextra -std=c11 -O2 -pthread
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -pthread -D_POSIX_C_SOURCE=200809L -Icomum
 
-all: v1
-
-v1: v1_sem_preferencia.o comum.o
-	$(CC) $(CFLAGS) -o $@ $^
-
-%.o: %.c comum.h
-	$(CC) $(CFLAGS) -c $<
-
-# make run  -> executa com os valores padrão
-run: v1
-	./v1
+all:
 
 clean:
-	rm -f *.o v1
+	rm -rf bin
 
-.PHONY: all run clean
+.PHONY: all clean
