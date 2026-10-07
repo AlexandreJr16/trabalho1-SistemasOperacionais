@@ -145,3 +145,18 @@
     a exibição do buffer lê todas as posições.
   - *"Por que um produtor dormiu sem vaga com uma posição livre na tela?"* A última vaga já estava
     reservada (`P(vagas)`) por outro produtor que ainda ia gravar.
+
+## Q2 v2 — vários produtores e vários consumidores (`bin/pc_v2`)
+
+- **Semáforos:** os mesmos da v1, com os mesmos valores iniciais: `vagas` = tamanho, `itens` = 0,
+  `mutexBuffer` = 1. O protocolo é idêntico.
+- **Quem bloqueia:**
+  - Como na v1, o produtor espera em `vagas` e o consumidor em `itens`.
+  - Agora também consumidor espera consumidor: dois consumidores acordam em `itens` e o segundo fica
+    `BLOQUEADO: buffer em uso` até o primeiro sair do buffer.
+- **O que o log prova:** com 3 consumidores, cada item é retirado por exatamente um deles, sem
+  duplicado nem posição vazia; o resumo fica zerado e o TSan não acusa nada.
+- **Pergunta provável:** *"então qual a diferença da v1?"* O protocolo é o mesmo porque o
+  `mutexBuffer` já exclui qualquer par de threads, inclusive dois consumidores. O que a v2 mostra é
+  que ele resolve a disputa pela `posicaoSaida`. Sem ele, dois consumidores leem a mesma posição, que
+  é o `DUPLICADO` da v3.
